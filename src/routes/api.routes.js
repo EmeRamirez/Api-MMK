@@ -9,7 +9,6 @@ const router = Router();
 router.get('/auth/:user', async(req,res) => {
     console.log(req.params);
     const usuario = req.params.user;
-    console.log(usuario);
     const data = await nuevoToken(usuario, 1);
     return res.json(data);
 });
@@ -37,12 +36,17 @@ router.get('/cervecerias', fn.getCervecerias);
 
 router.post('/cervecerias', fn.setCerveceria);
 
+router.get('/categorias/:id', fn.getCategoriasbyID);
+
+router.post('/categorias/:id', fn.setCategoriabyID);
 
 router.put('/usuario/:id');
 
 router.delete('/cerveceria/del/:id', fn.delCerveceria);
 
 router.delete('/usuario/del/:id', fn.delUsuario);
+
+router.delete('/categoria/del/:id', fn.delCategoria);
 
 
 

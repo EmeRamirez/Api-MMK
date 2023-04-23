@@ -1,4 +1,5 @@
 import {sequelize} from '../database/database.js';
+import { QueryTypes } from 'sequelize';
 
 import { Categoria } from '../models/Categoria.js';
 import { Cerveceria } from '../models/Cerveceria.js';
@@ -152,3 +153,75 @@ export const delUsuario = async(req,res) => {
     }
 };
 
+
+//Obtener el registro de todas las categorías de una respectiva cervecería(id).
+export const getCategoriasbyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log(req.params);
+            console.log('verificado');
+            let id = req.params.id;
+            const data = await sequelize.query(`SELECT cat.id_categoria, cat.descripcion, cer.nombre_cerveceria FROM categorias cat INNER JOIN cervecerias cer ON cer.id_cerveceria = cat.id_cerveceria WHERE cer.id_cerveceria = ?`,
+            {
+                replacements:[id],
+                type: QueryTypes.SELECT
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+    
+};
+
+
+//Obtener el registro de todas las categorías de una respectiva cervecería(id).
+export const setCategoriabyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log(req.body);
+            console.log('verificado');
+            let id = req.params.id;
+            let descr = req.body.desc;
+            console.log(descr);
+            const data = await Categoria.create({
+                descripcion: descr,
+                id_cerveceria: id
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+    
+};
+
+
+//Elimina una categoria de la base de datos
+export const delCategoria = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    console.log(auth);
+    if (auth){
+        const id = (req.params.id);
+
+        try {     
+            let data = await Categoria.destroy({
+                where:{ id_categoria: id }
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};

@@ -10,7 +10,7 @@ export const sequelize = new Sequelize (
     DB_PASSWORD,
     { 
         host:DB_HOST, 
-        port: PORT,
+        port: PORT,    //Este campo se activa para hostear la base de datos en railway
         dialect:'postgres'
     }
 );
