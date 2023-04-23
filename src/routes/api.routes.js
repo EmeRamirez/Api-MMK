@@ -31,12 +31,7 @@ router.get('/sincronizar', async(req,res) => {
 
 router.get('/usuarios', fn.getUsuarios);
 
-// router.post('/usuarios', fn.crearUsuario);
-
-router.post('/usuarios', (req,res) => {
-    console.log(req.body);
-    res.json('funca')
-});
+router.post('/usuarios', fn.setUsuario);
 
 router.get('/cervecerias', fn.getCervecerias);
 

@@ -9,7 +9,7 @@ import { Proceso } from '../models/Proceso.js';
 import { Produccion } from '../models/Produccion.js';
 import { Rol } from '../models/Rol.js';
 import { Usuario } from '../models/Usuario.js';
-import {nuevoToken, verificarToken} from '../database/database.js';
+import {verificarToken} from '../database/database.js';
 
 
 
@@ -28,38 +28,43 @@ export async function syncTables(){
 //Obtener el registro de todos los usuarios creados.
 export const getUsuarios = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
-    try {
-        console.log('verificado');
-        const data = await Usuario.findAll();
-        res.json(data);
-    } catch (error) {
-        console.log('Token inválido');
-        res.status(500).json({estado:false,message:'Token inválido'});
-    }
-};
-
-//Obtener el registro de todas las cervecerias creadas.
-export const getCervecerias = async(req,res) => {
-    let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
-     try {
-        console.log('verificado');
-        const data = await Cerveceria.findAll();
-        res.json(data);
-    } catch (error){
+    if (auth){
+        try {
+            console.log('verificado');
+            const data = await Usuario.findAll();
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
         console.log('Token inválido');
         res.status(500).json({estado:false,message:'Token inválido'});
     }
     
 };
 
-export const crearUsuario = async(req,res) => {
+//Obtener el registro de todas las cervecerias creadas.
+export const getCervecerias = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
-    if (auth){
+    if(auth){
+        try {
+            console.log('verificado');
+            const data = await Cerveceria.findAll();
+            res.json(data);
+        } catch (error){
+            console.log('Token inválido');
+            res.status(500).json({estado:false,message:'Token inválido'});
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    };
+};
+
+export const setUsuario = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if(auth){
         console.log(req.body);
-        
         try {
             const newuser = await Usuario.create({
                 nombre_usuario: req.body.name,
@@ -78,13 +83,13 @@ export const crearUsuario = async(req,res) => {
         console.log('Token inválido');
         res.status(500).json({estado:false,message:'Token inválido'});
     }
-
 };
 
 export const setCerveceria = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     console.log(auth);
     if (auth){
+        console.log(req.body);
         try {
             const newcerv = await Cerveceria.create({
                 nombre_cerveceria: req.body.nombre_cerv,
@@ -104,29 +109,6 @@ export const setCerveceria = async(req,res) => {
     }
 };
 
-export async function crearCerveceria(data) {
-    let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
-    if (auth){
-        try {
-            const newcerv = await Cerveceria.create({
-                nombre_cerveceria: data.nombre_cerv,
-                razonsocial: data.razons,
-                rut_empresa: data.rutcervz,
-                direccion: data.direccz,
-                comuna:data.comnaz
-            });
-
-            res.json(newcerv);
-
-        } catch (error) {
-            return res.status(500).json({ message: error.message });
-        }
-    }else{
-        console.log('Token inválido');
-        res.status(500).json({estado:false,message:'Token inválido'}); 
-    }
-};
 
 //Elimina una cerveceria de la base de datos
 export const delCerveceria = async(req,res) => {

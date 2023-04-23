@@ -17,8 +17,8 @@ app.use('/mmkapi',indexRoutes);
 
 async function chkConnection() {
     try {
-//         await sequelize.authenticate();
-//         console.log('Connexion establecida correctamente');
+        await sequelize.authenticate();
+        console.log('Conexion con BD establecida correctamente');
         app.listen(PORT, ()=>{
             console.log('Server levantado en puerto',PORT);
         });
