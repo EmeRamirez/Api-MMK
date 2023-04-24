@@ -5,6 +5,8 @@ import indexRoutes from './routes/api.routes.js';
 import { nuevoEstado, nuevoProceso, nuevoRol, nuevaCerveceria, nuevoUsuario } from './controllers/ormHandlers.js';
 import { syncTables } from './controllers/api.controller.js';
 import { PORT } from './database/config.js';
+import { Item } from './models/Inventario.js';
+import { Produccion } from './models/Produccion.js';
 
 const app = express();
 
@@ -29,35 +31,11 @@ async function chkConnection() {
 
 chkConnection();
 
-console.log(process.argv);
 
 
-if (process.argv[2] == 'sincronizar'){
-    const sync = await syncTables();
 
-} else if (process.argv[2] == 'insertarDatos'){
-    await syncTables();
 
-    await nuevoEstado('En Uso');
-    await nuevoEstado('Limpio');
-    await nuevoEstado('Sucio');
-    await nuevoEstado('Fuera de Servicio');
 
-    await nuevoProceso('Entregado');
-    await nuevoProceso('Reservado');
-    await nuevoProceso('Listo');
-    await nuevoProceso('Devuelto');
-
-    await nuevoRol('master');
-    await nuevoRol('admin');
-    await nuevoRol('user');
-
-    await nuevaCerveceria('Meet My Keg','MMK','1','1','1');
-
-    await nuevoUsuario('Eme','RS','eme123','emerson.ramirez.s@gmail.com',1,1);
-
-    process.exit();
-};
 
 
 

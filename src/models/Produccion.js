@@ -16,14 +16,12 @@ Produccion.init({
         primaryKey:true,
         allowNull:false,
         autoIncrement:true
-    },
-    fecha:{
-        type: DataTypes.STRING(10),
-        allowNull:false,
     }
 },
 {
     sequelize,
+    timestamps: true,
+    createdAt: 'fecha',
     tableName: 'producciones',
     name:{
         singular: 'produccion',

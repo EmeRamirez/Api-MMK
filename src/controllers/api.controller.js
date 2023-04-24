@@ -15,9 +15,9 @@ import {verificarToken} from '../database/database.js';
 
 
 //Función para sincronizar las tablas
-export async function syncTables(){
+export async function syncTables(opt){
     try {
-        await sequelize.sync({force:true}); // {force:true}   {force:false}
+        await sequelize.sync({force:opt}); // {force:true}   {force:false}
         console.log('Las tablas fueron sincronizadas exitosamente.');
         return true;
     } catch (error) {

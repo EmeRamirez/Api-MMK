@@ -19,14 +19,25 @@ router.get('/verauth/:token', async(req,res) => {
     res.json(data);
 })
 
-router.get('/sincronizar', async(req,res) => {
-    let sync = await syncTables();
+router.get('/sincronizarhard', async(req,res) => {
+    let sync = await syncTables(true);
     if (sync) {
         res.json({message:"Tablas sincronizadas"})
     } else {
         res.json({message:"Error al sincronizar tablas"})
     }
 });
+
+router.get('/sincronizarsoft', async(req,res) => {
+    let sync = await syncTables(false);
+    if (sync) {
+        res.json({message:"Tablas sincronizadas"})
+    } else {
+        res.json({message:"Error al sincronizar tablas"})
+    }
+});
+
+
 
 router.get('/usuarios', fn.getUsuarios);
 
