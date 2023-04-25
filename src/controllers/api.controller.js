@@ -50,7 +50,6 @@ export const getUsuarios = async(req,res) => {
 export const setUsuario = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if(auth){
-        console.log(req.body);
         try {
             const newuser = await Usuario.create({
                 nombre_usuario: req.body.name,
@@ -74,7 +73,6 @@ export const setUsuario = async(req,res) => {
 //Elimina un usuario de la base de datos
 export const delUsuario = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
     if (auth){
         const id = (req.params.id);
 
@@ -117,9 +115,7 @@ export const getCervecerias = async(req,res) => {
 //Registra una nueva cervecería en la base de datos
 export const setCerveceria = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
     if (auth){
-        console.log(req.body);
         try {
             const newcerv = await Cerveceria.create({
                 nombre_cerveceria: req.body.nombre_cerv,
@@ -143,7 +139,6 @@ export const setCerveceria = async(req,res) => {
 //Elimina una cerveceria de la base de datos
 export const delCerveceria = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
     if (auth){
         const id = (req.params.id);
 
@@ -169,7 +164,6 @@ export const getCategoriasbyID = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if (auth){
         try {
-            console.log(req.params);
             console.log('verificado');
             let id = req.params.id;
             const data = await sequelize.query(`SELECT cat.id_categoria, cat.descripcion, cer.nombre_cerveceria FROM categorias cat INNER JOIN cervecerias cer ON cer.id_cerveceria = cat.id_cerveceria WHERE cer.id_cerveceria = ? ORDER BY cat.descripcion ASC`,
@@ -194,11 +188,9 @@ export const setCategoriabyID = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if (auth){
         try {
-            console.log(req.body);
             console.log('verificado');
             let id = req.params.id;
             let descr = req.body.desc;
-            console.log(descr);
             const data = await Categoria.create({
                 descripcion: descr,
                 id_cerveceria: id   
@@ -217,7 +209,6 @@ export const setCategoriabyID = async(req,res) => {
 //Elimina una categoria de la base de datos
 export const delCategoria = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
     if (auth){
         const id = (req.params.id);
 
@@ -269,15 +260,8 @@ export const setInventariobyID = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if (auth){
         try {
-            console.log(req.body);
             console.log('verificado');
             let id = req.params.id;
-            let descr = req.body.desc;
-            // const data = await Item.create({
-            //     descripcion: descr,
-            //     id_cerveceria: id   
-            // });
-            // res.json(data);
 
             const data1 = await Item.create({
                 qr_code: req.body.codname,
@@ -287,9 +271,7 @@ export const setInventariobyID = async(req,res) => {
                 id_estado: req.body.estado,
                 id_cerveceria: req.body.idcerv
             });
-            console.log('NUEVO REGISTRO:');
             let newData = data1.toJSON();
-            console.log(newData);
             let newID = newData.id_item
 
             const data = await Item.update({
@@ -312,7 +294,6 @@ export const setInventariobyID = async(req,res) => {
 //Elimina un item de la tabla inventarios de la base de datos
 export const delItem = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
     if (auth){
         const id = (req.params.id);
 

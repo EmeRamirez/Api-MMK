@@ -41,27 +41,27 @@ router.get('/inventario/:id', fn.getInventariobyID);
 
 router.post('/inventario/:id', fn.setInventariobyID);
 
+router.delete('/inventario/del/:id', fn.delItem);
+
 router.get('/usuarios', fn.getUsuarios);
 
 router.post('/usuarios', fn.setUsuario);
+
+router.delete('/usuario/del/:id', fn.delUsuario);
 
 router.get('/cervecerias', fn.getCervecerias);
 
 router.post('/cervecerias', fn.setCerveceria);
 
+router.delete('/cerveceria/del/:id', fn.delCerveceria);
+
 router.get('/categorias/:id', fn.getCategoriasbyID);
 
 router.post('/categorias/:id', fn.setCategoriabyID);
 
-router.put('/usuario/:id');
-
-router.delete('/cerveceria/del/:id', fn.delCerveceria);
-
-router.delete('/usuario/del/:id', fn.delUsuario);
-
 router.delete('/categoria/del/:id', fn.delCategoria);
 
-router.delete('/inventario/del/:id', fn.delItem);
+router.put('/usuario/:id');
 
 
 
