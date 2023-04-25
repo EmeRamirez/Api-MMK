@@ -9,7 +9,7 @@ const router = Router();
 router.get('/auth/:user', async(req,res) => {
     console.log(req.params);
     const usuario = req.params.user;
-    const data = await nuevoToken(usuario, 1);
+    const data = await nuevoToken(usuario, 10);
     return res.json(data);
 });
 
@@ -37,7 +37,9 @@ router.get('/sincronizarsoft', async(req,res) => {
     }
 });
 
+router.get('/inventario/:id', fn.getInventariobyID);
 
+router.post('/inventario/:id', fn.setInventariobyID);
 
 router.get('/usuarios', fn.getUsuarios);
 
@@ -58,6 +60,8 @@ router.delete('/cerveceria/del/:id', fn.delCerveceria);
 router.delete('/usuario/del/:id', fn.delUsuario);
 
 router.delete('/categoria/del/:id', fn.delCategoria);
+
+router.delete('/inventario/del/:id', fn.delItem);
 
 
 

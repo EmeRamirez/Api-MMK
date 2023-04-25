@@ -26,6 +26,8 @@ export async function syncTables(opt){
     }
 };
 
+//================================>>USUARIOS<<================================//
+
 //Obtener el registro de todos los usuarios creados.
 export const getUsuarios = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
@@ -44,24 +46,7 @@ export const getUsuarios = async(req,res) => {
     
 };
 
-//Obtener el registro de todas las cervecerias creadas.
-export const getCervecerias = async(req,res) => {
-    let auth = await verificarToken(req.headers.authorization);
-    if(auth){
-        try {
-            console.log('verificado');
-            const data = await Cerveceria.findAll();
-            res.json(data);
-        } catch (error){
-            console.log('Token inválido');
-            res.status(500).json({estado:false,message:'Token inválido'});
-        }
-    } else {
-        console.log('Token inválido');
-        res.status(500).json({estado:false,message:'Token inválido'});
-    };
-};
-
+//Crear un nuevo Usuario
 export const setUsuario = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if(auth){
@@ -86,6 +71,50 @@ export const setUsuario = async(req,res) => {
     }
 };
 
+//Elimina un usuario de la base de datos
+export const delUsuario = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    console.log(auth);
+    if (auth){
+        const id = (req.params.id);
+
+        try {     
+            let data = await Usuario.destroy({
+                where:{ id_usuario: id }
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};
+
+
+//================================>>CERVECERIAS<<================================//
+
+//Obtener el registro de todas las cervecerias creadas.
+export const getCervecerias = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if(auth){
+        try {
+            console.log('verificado');
+            const data = await Cerveceria.findAll();
+            res.json(data);
+        } catch (error){
+            console.log('Token inválido');
+            res.status(500).json({estado:false,message:'Token inválido'});
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    };
+};
+
+
+//Registra una nueva cervecería en la base de datos
 export const setCerveceria = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     console.log(auth);
@@ -132,27 +161,8 @@ export const delCerveceria = async(req,res) => {
     }
 };
 
-//Elimina un usuario de la base de datos
-export const delUsuario = async(req,res) => {
-    let auth = await verificarToken(req.headers.authorization);
-    console.log(auth);
-    if (auth){
-        const id = (req.params.id);
 
-        try {     
-            let data = await Usuario.destroy({
-                where:{ id_usuario: id }
-            });
-            res.json(data);
-        } catch (error) {
-            return res.status(500).json({ message: error.message });
-        };
-    }else{
-        console.log('Token inválido');
-        res.status(500).json({estado:false,message:'Token inválido'});
-    }
-};
-
+//================================>>CATEGORIAS<<================================//
 
 //Obtener el registro de todas las categorías de una respectiva cervecería(id).
 export const getCategoriasbyID = async(req,res) => {
@@ -162,7 +172,7 @@ export const getCategoriasbyID = async(req,res) => {
             console.log(req.params);
             console.log('verificado');
             let id = req.params.id;
-            const data = await sequelize.query(`SELECT cat.id_categoria, cat.descripcion, cer.nombre_cerveceria FROM categorias cat INNER JOIN cervecerias cer ON cer.id_cerveceria = cat.id_cerveceria WHERE cer.id_cerveceria = ?`,
+            const data = await sequelize.query(`SELECT cat.id_categoria, cat.descripcion, cer.nombre_cerveceria FROM categorias cat INNER JOIN cervecerias cer ON cer.id_cerveceria = cat.id_cerveceria WHERE cer.id_cerveceria = ? ORDER BY cat.descripcion ASC`,
             {
                 replacements:[id],
                 type: QueryTypes.SELECT
@@ -179,7 +189,7 @@ export const getCategoriasbyID = async(req,res) => {
 };
 
 
-//Obtener el registro de todas las categorías de una respectiva cervecería(id).
+//Registrar una nueva categoría de una respectiva cervecería(id).
 export const setCategoriabyID = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if (auth){
@@ -191,7 +201,7 @@ export const setCategoriabyID = async(req,res) => {
             console.log(descr);
             const data = await Categoria.create({
                 descripcion: descr,
-                id_cerveceria: id
+                id_cerveceria: id   
             });
             res.json(data);
         } catch (error) {
@@ -200,8 +210,7 @@ export const setCategoriabyID = async(req,res) => {
     } else {
         console.log('Token inválido');
         res.status(500).json({estado:false,message:'Token inválido'});
-    }
-    
+    }   
 };
 
 
@@ -215,6 +224,101 @@ export const delCategoria = async(req,res) => {
         try {     
             let data = await Categoria.destroy({
                 where:{ id_categoria: id }
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};
+
+
+//================================>>INVENTARIO<<================================//
+
+//Obtener el registro de todo el inventario de una respectiva cervecería(id)
+export const getInventariobyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            let id = req.params.id;
+            const data = await Item.findAll({
+                where:{
+                    id_cerveceria:id
+                },
+                include: [{
+                    model:Estado,
+                    attributes:['descripcion']
+                }]
+            });
+            
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }   
+};
+
+//Registrar un nuevo item (Inventario) a una respectiva cervecería(id).
+export const setInventariobyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log(req.body);
+            console.log('verificado');
+            let id = req.params.id;
+            let descr = req.body.desc;
+            // const data = await Item.create({
+            //     descripcion: descr,
+            //     id_cerveceria: id   
+            // });
+            // res.json(data);
+
+            const data1 = await Item.create({
+                qr_code: req.body.codname,
+                tipo: req.body.tipo,
+                capacidad: req.body.capacidad,
+                observacion: req.body.obs,
+                id_estado: req.body.estado,
+                id_cerveceria: req.body.idcerv
+            });
+            console.log('NUEVO REGISTRO:');
+            let newData = data1.toJSON();
+            console.log(newData);
+            let newID = newData.id_item
+
+            const data = await Item.update({
+                    qr_code: req.body.codname+'0'+newID,
+                },
+                {
+                    where: {id_item:newID},
+                }
+            );
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }  
+};
+
+//Elimina un item de la tabla inventarios de la base de datos
+export const delItem = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    console.log(auth);
+    if (auth){
+        const id = (req.params.id);
+
+        try {     
+            let data = await Item.destroy({
+                where:{ id_item: id }
             });
             res.json(data);
         } catch (error) {
