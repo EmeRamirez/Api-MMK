@@ -61,7 +61,7 @@ router.post('/categorias/:id', fn.setCategoriabyID);
 
 router.delete('/categoria/del/:id', fn.delCategoria);
 
-router.put('/usuario/:id');
+router.put('/inventario/:id', fn.updInventario);
 
 
 

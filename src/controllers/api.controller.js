@@ -287,7 +287,7 @@ export const setInventariobyID = async(req,res) => {
         }
     } else {
         console.log('Token inválido');
-        res.status(500).json({estado:false,message:'Token inválido'});
+        res.status(500).json({message:'Token inválido'});
     }  
 };
 
@@ -310,3 +310,34 @@ export const delItem = async(req,res) => {
         res.status(500).json({estado:false,message:'Token inválido'});
     }
 };
+
+//Actualiza un item de la tabla inventarios
+export const updInventario = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        const id = (req.params.id);
+        let {estado,tipo,capacidad,obs} = req.body;
+
+        try {     
+            const data = await Item.update({
+                tipo: tipo,
+                capacidad: capacidad,
+                observacion: obs,
+                id_estado: estado
+            },
+            {
+                where: {id_item:id},
+            }
+            );
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};
+
+
+
