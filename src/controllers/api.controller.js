@@ -340,4 +340,40 @@ export const updInventario = async(req,res) => {
 };
 
 
+//Traer todos los items incluyendo todo como objetos anidados
+// const dat = await Item.findAll({
+//     where:{
+//         id_cerveceria:5
+//     },
+//     include: 
+//         [{all:true}]
+    
+// });
+
+// let d = JSON.stringify(dat);
+// let data = JSON.parse(d)
+// console.log(data);
+
+
+//Funcion para contar los estados de la lista de items de determinada cervecería. GROUP BY
+export const contarEstados = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        let id = req.params.id;
+        try {
+            const data = await sequelize.query(`SELECT est.descripcion, COUNT(est.id_estado) AS Conteo_estado FROM estados as est INNER JOIN inventario as i ON i.id_estado = est.id_estado INNER JOIN cervecerias as cer ON cer.id_cerveceria = i.id_cerveceria WHERE cer.id_cerveceria = ? GROUP BY est.descripcion`,
+            {
+                replacements:[id],
+                type: QueryTypes.SELECT
+   
+            });
+            return res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};
 

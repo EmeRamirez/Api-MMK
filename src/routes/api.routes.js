@@ -39,6 +39,8 @@ router.get('/sincronizarsoft', async(req,res) => {
 
 router.get('/inventario/:id', fn.getInventariobyID);
 
+router.get('/inventario/conteo/:id', fn.contarEstados);
+
 router.post('/inventario/:id', fn.setInventariobyID);
 
 router.delete('/inventario/del/:id', fn.delItem);
