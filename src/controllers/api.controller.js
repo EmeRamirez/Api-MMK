@@ -15,9 +15,9 @@ import {verificarToken} from '../database/database.js';
 
 
 //Función para sincronizar las tablas
-export async function syncTables(opt){
+export async function syncTables(){
     try {
-        await sequelize.sync({force:opt}); // {force:true}   {force:false}
+        await sequelize.sync(); // {force:true}   {force:false}   { alter: true }
         console.log('Las tablas fueron sincronizadas exitosamente.');
         return true;
     } catch (error) {
@@ -102,8 +102,7 @@ export const getCervecerias = async(req,res) => {
             const data = await Cerveceria.findAll();
             res.json(data);
         } catch (error){
-            console.log('Token inválido');
-            res.status(500).json({estado:false,message:'Token inválido'});
+            return res.status(500).json({ message: error.message });
         }
     } else {
         console.log('Token inválido');
@@ -155,6 +154,30 @@ export const delCerveceria = async(req,res) => {
         res.status(500).json({estado:false,message:'Token inválido'});
     }
 };
+
+
+//Actualizar la columna imglogo de la tabla CERVECERIAS
+export const updImgCerveceria = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {    
+            let id = req.params.id;
+            let rutaimg = req.body.rutaimg; 
+            const data = await Cerveceria.update({
+                imglogo: rutaimg
+            },{
+                where: {id_cerveceria:id},
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+    
+}
 
 
 //================================>>CATEGORIAS<<================================//

@@ -19,17 +19,8 @@ router.get('/verauth/:token', async(req,res) => {
     res.json(data);
 })
 
-router.get('/sincronizarhard', async(req,res) => {
-    let sync = await syncTables(true);
-    if (sync) {
-        res.json({message:"Tablas sincronizadas"})
-    } else {
-        res.json({message:"Error al sincronizar tablas"})
-    }
-});
-
-router.get('/sincronizarsoft', async(req,res) => {
-    let sync = await syncTables(false);
+router.get('/sincronizar', async(req,res) => {
+    let sync = await syncTables();
     if (sync) {
         res.json({message:"Tablas sincronizadas"})
     } else {
@@ -54,6 +45,8 @@ router.delete('/usuario/del/:id', fn.delUsuario);
 router.get('/cervecerias', fn.getCervecerias);
 
 router.post('/cervecerias', fn.setCerveceria);
+
+router.post('/cervecerias/updimg/:id', fn.updImgCerveceria);
 
 router.delete('/cerveceria/del/:id', fn.delCerveceria);
 

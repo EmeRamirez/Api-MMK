@@ -30,6 +30,10 @@ Cerveceria.init({
     comuna:{
         type: DataTypes.STRING(30),
         allowNull:false,
+    },
+    imglogo:{
+        type: DataTypes.STRING(200),
+        allowNull:true,
     }
 },
 {
