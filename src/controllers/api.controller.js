@@ -384,7 +384,7 @@ export const contarEstados = async(req,res) => {
     if (auth){
         let id = req.params.id;
         try {
-            const data = await sequelize.query(`SELECT est.descripcion, COUNT(est.id_estado) AS Conteo_estado FROM estados as est INNER JOIN inventario as i ON i.id_estado = est.id_estado INNER JOIN cervecerias as cer ON cer.id_cerveceria = i.id_cerveceria WHERE cer.id_cerveceria = ? GROUP BY est.descripcion`,
+            const data = await sequelize.query(`SELECT est.descripcion, COUNT(est.id_estado) AS Conteo_estado FROM estados as est INNER JOIN inventario as i ON i.id_estado = est.id_estado INNER JOIN cervecerias as cer ON cer.id_cerveceria = i.id_cerveceria WHERE cer.id_cerveceria = ? GROUP BY est.descripcion , est.id_estado`,
             {
                 replacements:[id],
                 type: QueryTypes.SELECT
@@ -400,3 +400,54 @@ export const contarEstados = async(req,res) => {
     }
 };
 
+//================================>>CLIENTES<<================================//
+//Función para obtener la información la tabla Clientes vinculado a Cervecerias
+export const getClientesbyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log('verificado');
+            let id = req.params.id;
+            const data = await Cliente.findAll({
+                raw:true,
+                where: { id_cerveceria: id}
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({message:'Token inválido'});
+    }  
+}
+
+
+//Función para añadir un nuevo registro de Cliente
+export const setClientebyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log('verificado');
+            const {nombre,direccion,comuna} = req.body;
+            const id = req.params.id;
+            console.log(req.body);
+            console.log(req.params);
+
+            const data = await Cliente.create({
+                nombre_cliente: nombre,
+                direccion_cliente: direccion,
+                comuna_cliente: comuna,
+                id_cerveceria: id
+            });
+            console.log('=====');
+            console.log(data);
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({message:'Token inválido'});
+    }  
+};

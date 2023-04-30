@@ -58,6 +58,10 @@ router.delete('/categoria/del/:id', fn.delCategoria);
 
 router.put('/inventario/:id', fn.updInventario);
 
+router.get('/clientes/:id', fn.getClientesbyID);
+
+router.post('/clientes/:id', fn.setClientebyID);
+
 
 
 export default router;
