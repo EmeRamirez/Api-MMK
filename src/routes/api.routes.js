@@ -62,6 +62,15 @@ router.get('/clientes/:id', fn.getClientesbyID);
 
 router.post('/clientes/:id', fn.setClientebyID);
 
+router.delete('/clientes/del/:id', fn.delCliente);
+
+router.get('/produccion/:id', fn.getProduccionesVigentesbyID);
+
+router.get('/produccion/historial/:id', fn.getProduccionesbyID);
+
+router.put('/produccion/:id', fn.updProducciones);
+
+
 
 
 export default router;

@@ -16,6 +16,10 @@ Produccion.init({
         primaryKey:true,
         allowNull:false,
         autoIncrement:true
+    },
+    observacion:{
+        type: DataTypes.STRING(200),
+        allowNull:true,
     }
 },
 {

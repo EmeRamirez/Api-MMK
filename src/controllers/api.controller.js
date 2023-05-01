@@ -1,5 +1,5 @@
 import {sequelize} from '../database/database.js';
-import { QueryTypes } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 
 import { Categoria } from '../models/Categoria.js';
 import { Cerveceria } from '../models/Cerveceria.js';
@@ -17,7 +17,7 @@ import {verificarToken} from '../database/database.js';
 //Función para sincronizar las tablas
 export async function syncTables(){
     try {
-        await sequelize.sync(); // {force:true}   {force:false}   { alter: true }
+        await sequelize.sync({ alter: true }); // {force:true}   {force:false}   { alter: true }
         console.log('Las tablas fueron sincronizadas exitosamente.');
         return true;
     } catch (error) {
@@ -420,7 +420,7 @@ export const getClientesbyID = async(req,res) => {
         console.log('Token inválido');
         res.status(500).json({message:'Token inválido'});
     }  
-}
+};
 
 
 //Función para añadir un nuevo registro de Cliente
@@ -450,4 +450,127 @@ export const setClientebyID = async(req,res) => {
         console.log('Token inválido');
         res.status(500).json({message:'Token inválido'});
     }  
+};
+
+
+
+//Elimina un cliente de la base de datos
+export const delCliente = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        const id = (req.params.id);
+
+        try {     
+            let data = await Cliente.destroy({
+                where:{ id_cliente: id }
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
+};
+
+
+
+
+//================================>>PRODUCCIONES<<================================//
+//Función para obtener la información la tabla Producciones vinculado a Cerveceria
+//Este query incluye la información de estado Proceso, Categoría, Cliente e Inventario
+export const getProduccionesbyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log('verificado');
+            let id = req.params.id;
+            const data = await Produccion.findAll({
+                all:true,
+                include: [
+                    Proceso, 
+                    Categoria, 
+                    Cliente,
+                    {
+                    model: Item,
+                    required: true,
+                    where:{
+                        id_cerveceria:id
+                    }}
+                ]
+            });
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({message:'Token inválido'});
+    }  
+};
+
+export const getProduccionesVigentesbyID = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        try {
+            console.log('verificado');
+            let id = req.params.id;
+            const data = await Produccion.findAll({
+                all:true,
+                where:{
+                    id_proceso: {
+                        [Op.not]:5
+                    }
+                },
+                include: [
+                    Proceso, 
+                    Categoria, 
+                    Cliente,
+                    {
+                    model: Item,
+                    required: true,
+                    where:{
+                        id_cerveceria:id
+                    }}
+                ]
+            });
+            console.log(data);
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({message:'Token inválido'});
+    }  
+};
+
+//Actualiza un registro de la tabla producciones
+export const updProducciones = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    if (auth){
+        const id = (req.params.id);
+        let {iditem,estado,categoria,cliente,obs} = req.body;
+
+        try {     
+            const data = await Produccion.update({
+                id_item: iditem,
+                id_categoria: categoria,
+                id_cliente: cliente,
+                id_proceso: estado,
+                observacion: obs
+            },
+            {
+                where: {id_produccion:id},
+            }
+            );
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        };
+    }else{
+        console.log('Token inválido');
+        res.status(500).json({estado:false,message:'Token inválido'});
+    }
 };
