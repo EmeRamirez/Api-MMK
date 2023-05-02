@@ -70,6 +70,9 @@ router.get('/produccion/historial/:id', fn.getProduccionesbyID);
 
 router.put('/produccion/:id', fn.updProducciones);
 
+router.post('/produccion/:id', fn.setNewProduccion);
+
+
 
 
 

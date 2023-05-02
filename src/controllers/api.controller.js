@@ -565,6 +565,16 @@ export const updProducciones = async(req,res) => {
                 where: {id_produccion:id},
             }
             );
+
+            if (estado == '5'){
+                const upd = await Item.update({
+                    id_estado:3
+                },{
+                    where: {id_item:iditem}
+                }
+                )
+            };
+
             res.json(data);
         } catch (error) {
             return res.status(500).json({ message: error.message });
@@ -573,4 +583,40 @@ export const updProducciones = async(req,res) => {
         console.log('Token inválido');
         res.status(500).json({estado:false,message:'Token inválido'});
     }
+};
+
+
+//Registrar una nueva producción y modificar el estado del item.
+export const setNewProduccion = async(req,res) => {
+    let auth = await verificarToken(req.headers.authorization);
+    // let auth = true
+    if (auth){
+        try {
+            console.log('verificado');
+            let id = req.params.id;
+
+            const data = await Produccion.create({
+                id_cliente: req.body.idcte,
+                id_item: id,
+                id_proceso: req.body.idproc,
+                id_categoria: req.body.idcat,
+                observacion: req.body.obs,
+            });
+           
+
+            const upd = await Item.update({
+                    id_estado: 1
+                },
+                {
+                    where: {id_item:id},
+                }
+            );
+            res.json(data);
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
+        }
+    } else {
+        console.log('Token inválido');
+        res.status(500).json({message:'Token inválido'});
+    }  
 };
