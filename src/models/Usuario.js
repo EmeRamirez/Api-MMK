@@ -34,6 +34,8 @@ Usuario.init({
 {
     sequelize,
     tableName: 'usuarios',
+    createdAt: false,
+    updatedAt: false,
     name:{
         singular: 'usuario',
         plural: 'usuarios'

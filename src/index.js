@@ -2,11 +2,7 @@ import express from 'express';
 import { sequelize } from './database/database.js';
 import morgan from 'morgan';
 import indexRoutes from './routes/api.routes.js';
-import { nuevoEstado, nuevoProceso, nuevoRol, nuevaCerveceria, nuevoUsuario } from './controllers/ormHandlers.js';
-import { syncTables } from './controllers/api.controller.js';
 import { PORT } from './database/config.js';
-import { Item } from './models/Inventario.js';
-import { Produccion } from './models/Produccion.js';
 
 const app = express();
 
