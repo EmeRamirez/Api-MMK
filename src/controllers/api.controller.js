@@ -51,6 +51,7 @@ export const setUsuario = async(req,res) => {
     let auth = await verificarToken(req.headers.authorization);
     if(auth){
         try {
+            console.log(req.body);
             const newuser = await Usuario.create({
                 nombre_usuario: req.body.name,
                 apellido_usuario: req.body.lastname,
@@ -620,3 +621,45 @@ export const setNewProduccion = async(req,res) => {
         res.status(500).json({message:'Token inválido'});
     }  
 };
+
+
+export const setPruebaGrt = async(req,res) => {
+    try {
+        let {nombre, apellido, email, cerveceria} = req.body;
+        console.log(req.body);
+
+        let arrCerv = await Cerveceria.findAll({
+            raw:true,
+            attributes:['nombre_cerveceria']
+        });
+        let index = arrCerv.map(e => e.nombre_cerveceria.toLowerCase()).indexOf(cerveceria.toLowerCase());
+        
+        if (index != -1){
+            res.json({message:'Esta cervecería ya existe'});
+        } else {
+            
+            const data = await Cerveceria.create({
+                nombre_cerveceria: cerveceria,
+                razonsocial: 'Cuenta Prueba',
+                rut_empresa: 'Cuenta Prueba',
+                direccion: 'Cuenta Prueba',
+                comuna:'Cuenta Prueba'
+            });
+            let nvaCerv = data.toJSON();
+            let cervID = nvaCerv.id_cerveceria;
+
+            const data2 = await Usuario.create({
+                nombre_usuario: nombre,
+                apellido_usuario: apellido,
+                password: '1234',
+                email: email,
+                id_cerveceria: cervID,
+                id_rol:2
+            })
+            res.json(data2)
+        };
+        
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}

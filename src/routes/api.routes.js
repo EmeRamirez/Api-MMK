@@ -28,6 +28,33 @@ router.get('/sincronizar', async(req,res) => {
     }
 });
 
+router.get('/inicializar', async(req,res) => {
+    if (req.headers.authorization == 'inicializar'){
+        console.log(req.headers.authorization);
+        try {
+            let sync = await syncTables();
+            if (sync) {
+                res.json({message:"Tablas sincronizadas"})
+            } else {
+                res.json({message:"Error al sincronizar tablas"})
+            }
+        } catch (error) {
+            res.json({message:"Operación no autorizada."})
+        }  
+    }
+    try {
+        let sync = await syncTables();
+        if (sync) {
+            res.json({message:"Tablas sincronizadas"})
+        } else {
+            res.json({message:"Error al sincronizar tablas"})
+        }
+    } catch (error) {
+        
+    }
+        
+});
+
 router.get('/inventario/:id', fn.getInventariobyID);
 
 router.get('/inventario/conteo/:id', fn.contarEstados);
@@ -41,6 +68,8 @@ router.get('/usuarios', fn.getUsuarios);
 router.post('/usuarios', fn.setUsuario);
 
 router.delete('/usuario/del/:id', fn.delUsuario);
+
+router.post('/usuario/free', fn.setPruebaGrt);
 
 router.get('/cervecerias', fn.getCervecerias);
 

@@ -42,7 +42,7 @@ Usuario.init({
     }
 });
 
-Cerveceria.hasMany(Usuario,{foreignKey:{name:'id_cerveceria',allowNull:false}});
+Cerveceria.hasMany(Usuario,{foreignKey:{name:'id_cerveceria',allowNull:false},onDelete:'CASCADE'});
 Usuario.belongsTo(Cerveceria,{foreignKey:'id_cerveceria'});
 
 Rol.hasMany(Usuario,{foreignKey:{name:'id_rol',allowNull:false}});
